@@ -17,6 +17,13 @@ Most ride apps know how far your bike has gone, but they do not help you manage 
 - **Type-safe full stack**: Next.js 15, TypeScript, tRPC, Prisma, SQLite, NextAuth, Tailwind CSS.
 - **Self-hostable**: Docker Compose setup with persistent SQLite storage.
 
+## Screenshots
+
+<p align="center">
+  <img src="./docs/screenshots/dashboard-maintenance.png" alt="Mobile dashboard showing bike maintenance alerts" width="300" />
+  <img src="./docs/screenshots/suspension-setup.png" alt="Mobile suspension setup form with fork and shock details" width="300" />
+</p>
+
 ## Strava branding note
 
 This project integrates with Strava but is not affiliated with, endorsed by, or sponsored by Strava. The app name intentionally avoids using “Strava” as part of the product identity.
