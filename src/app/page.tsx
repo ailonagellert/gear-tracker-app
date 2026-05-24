@@ -136,6 +136,7 @@ export default function HomePage() {
   const [distanceUnit, setDistanceUnit] = useState<'KM' | 'MI'>('MI');
   const [syncing, setSyncing] = useState(false);
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
+  const [syncCooldownUntil, setSyncCooldownUntil] = useState<number | null>(null);
   const [maintenanceDates, setMaintenanceDates] = useState<Record<string, string>>({});
   const [suspensionDrafts, setSuspensionDrafts] = useState<Record<string, SuspensionDraft>>({});
   const [suspensionResetTokens, setSuspensionResetTokens] = useState<Record<string, number>>({});
@@ -154,6 +155,18 @@ export default function HomePage() {
     const timeout = window.setTimeout(() => setSyncMessage(null), 3500);
     return () => window.clearTimeout(timeout);
   }, [syncMessage]);
+
+  useEffect(() => {
+    if (!syncCooldownUntil) return;
+    const remainingMs = syncCooldownUntil - Date.now();
+    if (remainingMs <= 0) {
+      setSyncCooldownUntil(null);
+      return;
+    }
+
+    const timeout = window.setTimeout(() => setSyncCooldownUntil(null), remainingMs);
+    return () => window.clearTimeout(timeout);
+  }, [syncCooldownUntil]);
 
   const getMutationErrorMessage = (error: unknown, fallback: string) => {
     const code = (error as { data?: { code?: string } } | null)?.data?.code;
@@ -552,6 +565,12 @@ export default function HomePage() {
 
 
   const handleSyncStrava = async () => {
+    if (syncCooldownUntil && syncCooldownUntil > Date.now()) {
+      const retryAfterSeconds = Math.ceil((syncCooldownUntil - Date.now()) / 1000);
+      setSyncMessage(`Please wait ${retryAfterSeconds}s before syncing again.`);
+      return;
+    }
+
     setSyncing(true);
     setSyncMessage(null);
     trackEvent('strava_sync_started');
@@ -561,9 +580,19 @@ export default function HomePage() {
       const result = await response.json();
 
       if (!response.ok) {
-        setSyncMessage(result.message ?? 'Sync failed');
+        if (response.status === 429 && typeof result.retryAfterSeconds === 'number') {
+          setSyncCooldownUntil(Date.now() + result.retryAfterSeconds * 1000);
+          setSyncMessage(`Please wait ${result.retryAfterSeconds}s before syncing again.`);
+        } else {
+          setSyncMessage(result.message ?? 'Sync failed');
+        }
         trackEvent('strava_sync_failed');
       } else {
+        if (typeof result.retryAfterSeconds === 'number') {
+          setSyncCooldownUntil(Date.now() + result.retryAfterSeconds * 1000);
+        } else {
+          setSyncCooldownUntil(null);
+        }
         setSyncMessage(`Synced ${result.pulled} activities, added ${result.bikesCreated} bike(s).`);
         trackEvent('strava_sync_completed', { activities: result.pulled, bikes_added: result.bikesCreated });
         await Promise.all([utils.bike.getAll.invalidate(), utils.bike.getDashboardStats.invalidate()]);
@@ -706,7 +735,7 @@ export default function HomePage() {
                 onClick={handleSyncStrava}
                 variant="outline"
                 size="sm"
-                disabled={syncing}
+                disabled={syncing || syncCooldownUntil !== null}
                 className="h-11 w-11 p-0 sm:w-auto sm:px-3"
                 aria-label={syncing ? 'Syncing Strava' : 'Sync Strava'}
                 title={syncing ? 'Syncing Strava' : 'Sync Strava'}

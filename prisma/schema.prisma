@@ -31,6 +31,7 @@ model User {
   maintenanceRecords MaintenanceRecord[]
   activities    Activity[]
   
+  @@index([lastSyncAt])
   @@map("users")
 }
 
@@ -138,6 +139,7 @@ model Bike {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   
+  @@index([userId])
   @@map("bikes")
 }
 
@@ -199,6 +201,7 @@ model Component {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   
+  @@index([bikeId])
   @@map("components")
 }
 
@@ -225,6 +228,8 @@ model MaintenanceRecord {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   
+  @@index([userId, performedAt])
+  @@index([bikeId, performedAt])
   @@map("maintenance_records")
 }
 
@@ -262,6 +267,8 @@ model Activity {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   
+  @@index([userId, startDate])
+  @@index([bikeId, startDate])
   @@map("activities")
 }
 
