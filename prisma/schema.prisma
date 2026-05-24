@@ -19,6 +19,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   lastSyncAt    DateTime?
+  syncLockExpiresAt DateTime?
   
   // Strava integration
   stravaId      String?   @unique
@@ -31,7 +32,6 @@ model User {
   maintenanceRecords MaintenanceRecord[]
   activities    Activity[]
   
-  @@index([lastSyncAt])
   @@map("users")
 }
 

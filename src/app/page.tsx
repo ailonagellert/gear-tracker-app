@@ -178,6 +178,7 @@ export default function HomePage() {
   };
 
   const convertKm = (km: number) => (distanceUnit === 'KM' ? km : km * 0.621371);
+  const isSyncCooldownActive = syncCooldownUntil !== null && syncCooldownUntil > Date.now();
 
   const defaultActivityOptions: Array<{ value: DefaultActivityType; label: string }> = [
     { value: 'Ride', label: 'Ride' },
@@ -565,7 +566,7 @@ export default function HomePage() {
 
 
   const handleSyncStrava = async () => {
-    if (syncCooldownUntil && syncCooldownUntil > Date.now()) {
+    if (isSyncCooldownActive) {
       const retryAfterSeconds = Math.ceil((syncCooldownUntil - Date.now()) / 1000);
       setSyncMessage(`Please wait ${retryAfterSeconds}s before syncing again.`);
       return;
@@ -735,7 +736,7 @@ export default function HomePage() {
                 onClick={handleSyncStrava}
                 variant="outline"
                 size="sm"
-                disabled={syncing || syncCooldownUntil !== null}
+                disabled={syncing || isSyncCooldownActive}
                 className="h-11 w-11 p-0 sm:w-auto sm:px-3"
                 aria-label={syncing ? 'Syncing Strava' : 'Sync Strava'}
                 title={syncing ? 'Syncing Strava' : 'Sync Strava'}
