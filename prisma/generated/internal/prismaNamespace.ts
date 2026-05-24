@@ -1198,6 +1198,7 @@ export const UserScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   lastSyncAt: 'lastSyncAt',
+  syncLockExpiresAt: 'syncLockExpiresAt',
   stravaId: 'stravaId'
 } as const
 

@@ -33,6 +33,7 @@ export type UserMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   lastSyncAt: Date | null
+  syncLockExpiresAt: Date | null
   stravaId: string | null
 }
 
@@ -45,6 +46,7 @@ export type UserMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   lastSyncAt: Date | null
+  syncLockExpiresAt: Date | null
   stravaId: string | null
 }
 
@@ -57,6 +59,7 @@ export type UserCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   lastSyncAt: number
+  syncLockExpiresAt: number
   stravaId: number
   _all: number
 }
@@ -71,6 +74,7 @@ export type UserMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   lastSyncAt?: true
+  syncLockExpiresAt?: true
   stravaId?: true
 }
 
@@ -83,6 +87,7 @@ export type UserMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   lastSyncAt?: true
+  syncLockExpiresAt?: true
   stravaId?: true
 }
 
@@ -95,6 +100,7 @@ export type UserCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   lastSyncAt?: true
+  syncLockExpiresAt?: true
   stravaId?: true
   _all?: true
 }
@@ -180,6 +186,7 @@ export type UserGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   lastSyncAt: Date | null
+  syncLockExpiresAt: Date | null
   stravaId: string | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
@@ -213,6 +220,7 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastSyncAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  syncLockExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   stravaId?: Prisma.StringNullableFilter<"User"> | string | null
   settings?: Prisma.XOR<Prisma.UserSettingsNullableScalarRelationFilter, Prisma.UserSettingsWhereInput> | null
   accounts?: Prisma.AccountListRelationFilter
@@ -231,6 +239,7 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  syncLockExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   stravaId?: Prisma.SortOrderInput | Prisma.SortOrder
   settings?: Prisma.UserSettingsOrderByWithRelationInput
   accounts?: Prisma.AccountOrderByRelationAggregateInput
@@ -253,6 +262,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastSyncAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  syncLockExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   settings?: Prisma.XOR<Prisma.UserSettingsNullableScalarRelationFilter, Prisma.UserSettingsWhereInput> | null
   accounts?: Prisma.AccountListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
@@ -270,6 +280,7 @@ export type UserOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  syncLockExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   stravaId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -288,6 +299,7 @@ export type UserScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   lastSyncAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  syncLockExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   stravaId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
@@ -300,6 +312,7 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -318,6 +331,7 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -336,6 +350,7 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -354,6 +369,7 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -372,6 +388,7 @@ export type UserCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
 }
 
@@ -384,6 +401,7 @@ export type UserUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -396,6 +414,7 @@ export type UserUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -408,6 +427,7 @@ export type UserCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
+  syncLockExpiresAt?: Prisma.SortOrder
   stravaId?: Prisma.SortOrder
 }
 
@@ -420,6 +440,7 @@ export type UserMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
+  syncLockExpiresAt?: Prisma.SortOrder
   stravaId?: Prisma.SortOrder
 }
 
@@ -432,6 +453,7 @@ export type UserMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
+  syncLockExpiresAt?: Prisma.SortOrder
   stravaId?: Prisma.SortOrder
 }
 
@@ -549,6 +571,7 @@ export type UserCreateWithoutAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -566,6 +589,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -599,6 +623,7 @@ export type UserUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -616,6 +641,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -633,6 +659,7 @@ export type UserCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -650,6 +677,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -683,6 +711,7 @@ export type UserUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -700,6 +729,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -717,6 +747,7 @@ export type UserCreateWithoutSettingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -734,6 +765,7 @@ export type UserUncheckedCreateWithoutSettingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -767,6 +799,7 @@ export type UserUpdateWithoutSettingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -784,6 +817,7 @@ export type UserUncheckedUpdateWithoutSettingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -801,6 +835,7 @@ export type UserCreateWithoutBikesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -818,6 +853,7 @@ export type UserUncheckedCreateWithoutBikesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -851,6 +887,7 @@ export type UserUpdateWithoutBikesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -868,6 +905,7 @@ export type UserUncheckedUpdateWithoutBikesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -885,6 +923,7 @@ export type UserCreateWithoutMaintenanceRecordsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -902,6 +941,7 @@ export type UserUncheckedCreateWithoutMaintenanceRecordsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -935,6 +975,7 @@ export type UserUpdateWithoutMaintenanceRecordsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -952,6 +993,7 @@ export type UserUncheckedUpdateWithoutMaintenanceRecordsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -969,6 +1011,7 @@ export type UserCreateWithoutActivitiesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -986,6 +1029,7 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastSyncAt?: Date | string | null
+  syncLockExpiresAt?: Date | string | null
   stravaId?: string | null
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -1019,6 +1063,7 @@ export type UserUpdateWithoutActivitiesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -1036,6 +1081,7 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  syncLockExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stravaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -1120,6 +1166,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   lastSyncAt?: boolean
+  syncLockExpiresAt?: boolean
   stravaId?: boolean
   settings?: boolean | Prisma.User$settingsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -1139,6 +1186,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   lastSyncAt?: boolean
+  syncLockExpiresAt?: boolean
   stravaId?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -1151,6 +1199,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   lastSyncAt?: boolean
+  syncLockExpiresAt?: boolean
   stravaId?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -1163,10 +1212,11 @@ export type UserSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   lastSyncAt?: boolean
+  syncLockExpiresAt?: boolean
   stravaId?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "emailVerified" | "name" | "image" | "createdAt" | "updatedAt" | "lastSyncAt" | "stravaId", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "emailVerified" | "name" | "image" | "createdAt" | "updatedAt" | "lastSyncAt" | "syncLockExpiresAt" | "stravaId", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   settings?: boolean | Prisma.User$settingsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -1198,6 +1248,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdAt: Date
     updatedAt: Date
     lastSyncAt: Date | null
+    syncLockExpiresAt: Date | null
     stravaId: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -1636,6 +1687,7 @@ export interface UserFieldRefs {
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastSyncAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly syncLockExpiresAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly stravaId: Prisma.FieldRef<"User", 'String'>
 }
     
