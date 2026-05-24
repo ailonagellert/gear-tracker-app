@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    container_name: gear-tracker-app
+    ports:
+      - "3002:3000"
+    env_file:
+      - .env.local
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/dev.db
+    volumes:
+      - gear_tracker_app_data:/app/data
+    command: >
+      sh -lc "npx prisma migrate deploy --schema /app/prisma/schema.prisma && npm run start"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  gear_tracker_app_data:

@@ -1,0 +1,321 @@
+// This is your Prisma schema file.
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String?   @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastSyncAt    DateTime?
+  
+  // Strava integration
+  stravaId      String?   @unique
+  
+  // User settings
+  settings      UserSettings?
+  accounts      Account[]
+  sessions      Session[]
+  bikes         Bike[]
+  maintenanceRecords MaintenanceRecord[]
+  activities    Activity[]
+  
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  athlete           Json?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model UserSettings {
+  id           String  @id @default(cuid())
+  userId       String  @unique
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Notification preferences
+  emailNotifications   Boolean @default(true)
+  maintenanceReminders Boolean @default(true)
+
+  // Default bike assignment when Strava activity gear_id is missing
+  defaultRideBikeId              String?
+  defaultMountainBikeRideBikeId  String?
+  defaultGravelRideBikeId        String?
+  defaultEBikeRideBikeId         String?
+  defaultEMountainBikeRideBikeId String?
+  defaultVirtualRideBikeId       String?
+  
+  // Default maintenance intervals (in km)
+  defaultChainInterval      Int @default(3000)
+  defaultCassetteInterval   Int @default(5000)
+  defaultBrakeInterval      Int @default(2000)
+  defaultTireInterval       Int @default(8000)
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("user_settings")
+}
+
+model Bike {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Basic bike info
+  name         String
+  brand        String?
+  model        String?
+  year         Int?
+  type         BikeType @default(ROAD)
+  description  String?
+  imageUrl     String?
+  
+  // Tracking settings
+  isTracking   Boolean  @default(true)
+  trackingMode TrackingMode @default(FORK_AND_SHOCK)
+  suspensionSettingsEnabled Boolean @default(false)
+  maintenanceBaselineDate DateTime?
+  totalMileage Float    @default(0)
+  recommendationSnoozedUntil DateTime?
+  recommendationLastActionAt DateTime?
+  recommendationLastAction RecommendationAction?
+  
+  // Strava integration
+  stravaGearId String?  @unique
+  
+  components   Component[]
+  suspensionSettings SuspensionSettings?
+  maintenanceRecords MaintenanceRecord[]
+  activities   Activity[]
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("bikes")
+}
+
+model SuspensionSettings {
+  id           String   @id @default(cuid())
+  bikeId        String   @unique
+  bike          Bike     @relation(fields: [bikeId], references: [id], onDelete: Cascade)
+  advancedSettingsEnabled Boolean @default(false)
+
+  // Fork settings
+  model         String?
+  airPressure   Int?
+  reboundHighSpeed Int?
+  reboundLowSpeed  Int?
+  compressionHighSpeed Int?
+  compressionLowSpeed  Int?
+  lastServiceDate DateTime?
+  lastServicer   String?
+
+  // Shock settings
+  shockModel         String?
+  shockAirPressure   Int?
+  shockReboundHighSpeed Int?
+  shockReboundLowSpeed  Int?
+  shockCompressionHighSpeed Int?
+  shockCompressionLowSpeed  Int?
+  shockLastServiceDate DateTime?
+  shockLastServicer   String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("suspension_settings")
+}
+
+model Component {
+  id           String   @id @default(cuid())
+  bikeId       String
+  bike         Bike     @relation(fields: [bikeId], references: [id], onDelete: Cascade)
+  
+  name         String
+  type         ComponentType
+  brand        String?
+  model        String?
+  description  String?
+  
+  // Maintenance tracking
+  currentMileage   Float @default(0)
+  maintenanceInterval Int // km between maintenance
+  lastMaintenanceAt    DateTime?
+  lastMaintenanceMileage Float @default(0)
+  
+  // Status
+  isActive     Boolean @default(true)
+  needsMaintenance Boolean @default(false)
+  
+  maintenanceRecords MaintenanceRecord[]
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("components")
+}
+
+model MaintenanceRecord {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bikeId       String
+  bike         Bike     @relation(fields: [bikeId], references: [id], onDelete: Cascade)
+  componentId  String?
+  component    Component? @relation(fields: [componentId], references: [id], onDelete: Cascade)
+  
+  type         MaintenanceType
+  description  String?
+  notes        String?
+  cost         Float?
+  
+  // Mileage at time of maintenance
+  mileageAtMaintenance Float
+  
+  // Date performed
+  performedAt  DateTime @default(now())
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("maintenance_records")
+}
+
+model Activity {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bikeId       String?
+  bike         Bike?    @relation(fields: [bikeId], references: [id], onDelete: SetNull)
+  
+  // Strava data
+  stravaId     String?  @unique
+  name         String
+  type         String?
+  distance     Float    // in meters
+  movingTime   Int      // in seconds
+  totalElevationGain Float?
+  
+  // Date and location
+  startDate    DateTime
+  timezone     String?
+  location     String?
+  
+  // Activity stats
+  averageSpeed Float?
+  maxSpeed     Float?
+  averageHeartrate Float?
+  maxHeartrate Float?
+  averageCadence Float?
+  averageWatts Float?
+  weightedAverageWatts Float?
+  workoutType Int?
+  sufferScore Float?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("activities")
+}
+
+enum BikeType {
+  ROAD
+  MOUNTAIN
+  HYBRID
+  GRAVEL
+  ELECTRIC
+  BMX
+  OTHER
+}
+
+enum ComponentType {
+  CHAIN
+  CASSETTE
+  CHAINRING
+  BRAKE_PADS
+  BRAKE_DISC
+  TIRES
+  TUBES
+  DERAILLEUR
+  SHIFTERS
+  HANDLEBARS
+  STEM
+  SEATPOST
+  SADDLE
+  PEDALS
+  CRANKSET
+  BOTTOM_BRACKET
+  HEADSET
+  FORK
+  SHOCK
+  OTHER
+}
+
+enum MaintenanceType {
+  REPLACE
+  CLEAN
+  LUBRICATE
+  ADJUST
+  INSPECT
+  REPAIR
+  UPGRADE
+  OTHER
+}
+
+enum TrackingMode {
+  FORK_ONLY
+  FORK_AND_SHOCK
+}
+
+enum RecommendationAction {
+  DONE
+  SNOOZE
+  UNSNOOZE
+}

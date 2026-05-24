@@ -1,0 +1,2 @@
+-- SQLite stores Prisma enums as TEXT; no physical schema change required for this enum-tightening step.
+-- This migration records the model-level change from Bike.recommendationLastAction String? -> RecommendationAction?.
