@@ -99,22 +99,68 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const userId = session.user.id;
 
-  const userSyncState = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { lastSyncAt: true },
+  const cooldownMs = env.STRAVA_SYNC_COOLDOWN_MINUTES * 60 * 1000;
+  const claimedSyncAt = new Date();
+  const syncLockExpiresAt = new Date(claimedSyncAt.getTime() + 30 * 60 * 1000);
+  const cooldownThreshold = new Date(Date.now() - cooldownMs);
+  const claimResult = await prisma.user.updateMany({
+    where: {
+      id: userId,
+      AND: [
+        {
+          OR: [
+            { syncLockExpiresAt: null },
+            { syncLockExpiresAt: { lt: claimedSyncAt } },
+          ],
+        },
+        {
+          OR: [
+            { lastSyncAt: null },
+            { lastSyncAt: { lt: cooldownThreshold } },
+          ],
+        },
+      ],
+    },
+    data: {
+      lastSyncAt: claimedSyncAt,
+      syncLockExpiresAt,
+    },
   });
 
-  const cooldownMs = env.STRAVA_SYNC_COOLDOWN_MINUTES * 60 * 1000;
-  if (userSyncState?.lastSyncAt) {
-    const elapsedMs = Date.now() - userSyncState.lastSyncAt.getTime();
-    if (elapsedMs < cooldownMs) {
-      const retryAfterSeconds = Math.ceil((cooldownMs - elapsedMs) / 1000);
+  if (claimResult.count === 0) {
+    const userSyncState = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { lastSyncAt: true, syncLockExpiresAt: true },
+    });
+
+    if (!userSyncState) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    if (userSyncState.syncLockExpiresAt && userSyncState.syncLockExpiresAt > claimedSyncAt) {
+      const retryAfterSeconds = Math.max(
+        1,
+        Math.ceil((userSyncState.syncLockExpiresAt.getTime() - Date.now()) / 1000)
+      );
       res.setHeader('Retry-After', retryAfterSeconds.toString());
       return res.status(429).json({
-        message: `Please wait before syncing again (${env.STRAVA_SYNC_COOLDOWN_MINUTES} min cooldown).`,
+        message: 'A Strava sync is already in progress. Please wait before trying again.',
         retryAfterSeconds,
       });
     }
+
+    const elapsedMs = userSyncState?.lastSyncAt
+      ? Date.now() - userSyncState.lastSyncAt.getTime()
+      : 0;
+    const retryAfterSeconds = Math.max(
+      1,
+      Math.ceil((cooldownMs - elapsedMs) / 1000)
+    );
+    res.setHeader('Retry-After', retryAfterSeconds.toString());
+    return res.status(429).json({
+      message: `Please wait before syncing again (${env.STRAVA_SYNC_COOLDOWN_MINUTES} min cooldown).`,
+      retryAfterSeconds,
+    });
   }
 
   try {
@@ -396,9 +442,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    await prisma.user.update({
-      where: { id: userId },
-      data: { lastSyncAt: new Date() },
+    const retryAfterSeconds = Math.max(
+      1,
+      Math.ceil((claimedSyncAt.getTime() + cooldownMs - Date.now()) / 1000)
+    );
+
+    await prisma.user.updateMany({
+      where: { id: userId, lastSyncAt: claimedSyncAt },
+      data: { syncLockExpiresAt: null },
     });
 
     return res.status(200).json({
@@ -409,8 +460,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       touchedBikes: touchedBikeIds.size,
       bikesCreated,
       bikesRenamed,
+      retryAfterSeconds,
     });
   } catch (error) {
+    await prisma.user.updateMany({
+      where: { id: userId, lastSyncAt: claimedSyncAt },
+      data: { lastSyncAt: cooldownThreshold, syncLockExpiresAt: null },
+    });
+
     return res.status(500).json({
       message: 'Sync failed',
       error: error instanceof Error ? error.message : 'Unknown error',
